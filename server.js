@@ -31,26 +31,18 @@ let userAmount = 0;
 
 io.on('connection', (socket) => {
 	console.log('A user connected');
-	socket.on('add user', (user)=>{
-		User.find({userName:user}, (err,data)=>{
-			data.forEach((name)=>{
-				if(name.userName != user.toString()){	
-					socket.emit('enterRoom');
-					console.log("Made it here");
-				}
-				else{
-					socket.emit('userExists');
-					console.log('User exists');
-				}
-			});
-		});
-
+	socket.on('validateUser', (user)=>{
+		if( !user == ''){
+			io.emit('validUser', {message:user});
+		}
 	});
-	socket.on('payment', (data)=>{
-		socket.broadcast.emit('payment', {
-			username: socket.userName,
-			message:data,
-		});
+	let total = 0;
+	socket.on('validateMoney', (money)=>{
+		if( !money == ''){
+			io.emit('validMoney', {message:money});
+		}
 	});
-
+	socket.on('disconnect', ()=>{
+		console.log("Disconnected");
+	});
 });
